@@ -10,9 +10,9 @@ importers:
 
   apps/site:
     dependencies:
-      easing-gradients:
+      mesurer:
         specifier: workspace:*
-        version: link:../../packages/easing-gradients
+        version: link:../../packages/mesurer
       react:
         specifier: ^19.0.0
         version: 19.2.4
@@ -42,7 +42,7 @@ importers:
         specifier: ^5.3.3
         version: 5.4.21(lightningcss@1.32.0)
 
-  packages/easing-gradients:
+  packages/mesurer:
     devDependencies:
       tailwindcss:
         specifier: ^4.2.2

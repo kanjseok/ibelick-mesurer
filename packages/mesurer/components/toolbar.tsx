@@ -36,6 +36,8 @@ type ToolbarProps = {
 
 const TOOLBAR_TOOLTIP_DELAY_MS = 800;
 const TOOLBAR_DRAG_SLOP = 6;
+const GUIDE_MENU_WIDTH = 176;
+const VIEWPORT_PADDING = 8;
 
 type ToolbarButtonProps = {
   id: string;
@@ -269,9 +271,28 @@ function ToolbarComponent(
     useToolbarTooltip();
   const [guideMenuOpen, setGuideMenuOpen] = useState(false);
   const guideMenuRef = useRef<HTMLDivElement | null>(null);
-  const guideMenuPanelRef = useRef<HTMLDivElement | null>(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState(0);
   const [menuAlign, setMenuAlign] = useState<"left" | "right">("right");
+
+  const updateMenuAlign = useCallback(() => {
+    const anchorRect = guideMenuRef.current?.getBoundingClientRect();
+    if (!anchorRect) return;
+
+    const rightAlignedLeft = anchorRect.right - GUIDE_MENU_WIDTH;
+    const leftAlignedRight = anchorRect.left + GUIDE_MENU_WIDTH;
+
+    if (rightAlignedLeft < VIEWPORT_PADDING) {
+      setMenuAlign("left");
+      return;
+    }
+
+    if (leftAlignedRight > window.innerWidth - VIEWPORT_PADDING) {
+      setMenuAlign("right");
+      return;
+    }
+
+    setMenuAlign("right");
+  }, []);
 
   const viewportHeight =
     typeof window === "undefined" ? 0 : window.innerHeight || 0;
@@ -311,35 +332,20 @@ function ToolbarComponent(
       guideMenuRef.current
         ?.querySelector<HTMLElement>("[role='menu']")
         ?.focus();
-      const panel = guideMenuPanelRef.current;
-      if (!panel) return;
-      const rect = panel.getBoundingClientRect();
-      if (rect.left < 8) {
-        setMenuAlign("left");
-        return;
-      }
-      if (rect.right > window.innerWidth - 8) {
-        setMenuAlign("right");
-      }
     });
 
     const handlePointerDown = (event: PointerEvent) => {
-      if (!guideMenuRef.current) return;
-      if (guideMenuRef.current.contains(event.target as Node)) return;
+      const menu = guideMenuRef.current;
+      if (!menu) return;
+
+      const path = event.composedPath();
+      if (path.includes(menu)) return;
+
       setGuideMenuOpen(false);
     };
 
     const handleResize = () => {
-      const panel = guideMenuPanelRef.current;
-      if (!panel) return;
-      const rect = panel.getBoundingClientRect();
-      if (rect.left < 8) {
-        setMenuAlign("left");
-        return;
-      }
-      if (rect.right > window.innerWidth - 8) {
-        setMenuAlign("right");
-      }
+      updateMenuAlign();
     };
 
     window.addEventListener("pointerdown", handlePointerDown);
@@ -349,7 +355,7 @@ function ToolbarComponent(
       window.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("resize", handleResize);
     };
-  }, [guideMenuOpen, guideOrientation]);
+  }, [guideMenuOpen, guideOrientation, updateMenuAlign]);
 
   return (
     <div
@@ -415,6 +421,7 @@ function ToolbarComponent(
             setGuideMenuOpen((prev) => {
               if (!prev) {
                 setActiveMenuIndex(guideOrientation === "horizontal" ? 0 : 1);
+                updateMenuAlign();
               }
               return !prev;
             });
@@ -441,7 +448,6 @@ function ToolbarComponent(
               menuSide === "bottom" ? "top-full mt-2" : "bottom-full mb-2",
               menuAlign === "left" ? "left-0" : "right-0",
             )}
-            ref={guideMenuPanelRef}
             role="menu"
             tabIndex={0}
             onKeyDown={(event) => {

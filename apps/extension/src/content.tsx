@@ -1,6 +1,7 @@
 import { createRoot, type Root } from "react-dom/client";
 import { Measurer } from "mesurer";
 
+const HOST_ID = "mesurer-extension-host";
 const ROOT_ID = "mesurer-extension-root";
 const STATE_KEY = "__MESURER_EXTENSION_STATE__";
 
@@ -27,24 +28,34 @@ const getState = () => {
 };
 
 const getOrCreateContainer = () => {
-  let container = document.getElementById(ROOT_ID);
+  let host = document.getElementById(HOST_ID);
+
+  if (!host) {
+    host = document.createElement("div");
+    host.id = HOST_ID;
+    document.body.appendChild(host);
+  }
+
+  const shadowRoot = host.shadowRoot ?? host.attachShadow({ mode: "open" });
+
+  let container = shadowRoot.getElementById(ROOT_ID);
 
   if (!container) {
     container = document.createElement("div");
     container.id = ROOT_ID;
-    document.body.appendChild(container);
+    shadowRoot.appendChild(container);
   }
 
-  return container;
+  return { container, shadowRoot };
 };
 
 const mount = () => {
   const state = getState();
   if (state.mounted) return;
 
-  const container = getOrCreateContainer();
+  const { container, shadowRoot } = getOrCreateContainer();
   state.root = createRoot(container);
-  state.root.render(<Measurer />);
+  state.root.render(<Measurer portalTarget={shadowRoot} />);
   state.mounted = true;
 };
 
@@ -56,9 +67,9 @@ const unmount = () => {
   state.root = null;
   state.mounted = false;
 
-  const container = document.getElementById(ROOT_ID);
-  if (container) {
-    container.remove();
+  const host = document.getElementById(HOST_ID);
+  if (host) {
+    host.remove();
   }
 };
 

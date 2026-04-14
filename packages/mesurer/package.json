@@ -1,6 +1,6 @@
 {
   "name": "mesurer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Measure and align everything on localhost.",
   "license": "MIT",
   "author": "Julien Thibeaut",

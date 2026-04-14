@@ -1,6 +1,6 @@
 # mesurer
 
-## 0.0.4
+## 0.0.5
 
 - update toolbar UI
 - add changelog

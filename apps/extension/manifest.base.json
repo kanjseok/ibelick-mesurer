@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Mesurer",
+  "description": "Measure and align elements on any website.",
+  "version": "0.0.0",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_title": "Toggle Mesurer"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

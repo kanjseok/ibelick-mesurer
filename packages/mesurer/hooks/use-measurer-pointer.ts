@@ -242,7 +242,6 @@ export const useMeasurerPointer = ({
           ...prev,
           { id, orientation: guideOrientation, position },
         ])
-        setSelectedGuideIds([id])
         scheduleGuideDragHold(id, setDraggingGuideId)
         event.currentTarget.setPointerCapture(event.pointerId)
         return

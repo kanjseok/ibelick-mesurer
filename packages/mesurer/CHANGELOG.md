@@ -2,9 +2,9 @@
 
 ## 0.0.4
 
-- feat: mock entry for upcoming release
-- Updated dependencies
-  - @mesurer/core@0.0.4
+- update toolbar UI
+- add changelog
+- stop auto selecting new guides
 
 ## 0.0.3
 

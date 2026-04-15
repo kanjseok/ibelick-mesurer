@@ -572,7 +572,7 @@ function MeasurerClient({
   return createPortal(
     <div
       ref={overlayRef}
-      className="mesurer-root pointer-events-none fixed inset-0 z-50"
+      className="mesurer-root msr:pointer-events-none msr:fixed msr:inset-0 msr:z-50"
     >
       <MeasurerOverlay
         enabled={enabled}

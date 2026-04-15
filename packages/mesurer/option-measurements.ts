@@ -39,24 +39,22 @@ export const getOptionPairOverlay = (params: {
   if (!params.altPressed) return null
   if (!params.selectedGuide && !params.primarySelectedMeasurement) return null
 
+  const primary = params.primarySelectedMeasurement
+
   const selectedElement = params.selectedGuide
     ? null
-    : (params.primarySelectedMeasurement.elementRef ??
-      params.selectedElementRef ??
-      null)
+    : (primary?.elementRef ?? params.selectedElementRef ?? null)
 
   const selectedTarget: OptionTarget | null = params.selectedGuide
     ? {
         rect: getGuideRect(params.selectedGuide),
         guideId: params.selectedGuide.id,
       }
-    : selectedElement
-      ? params.primarySelectedMeasurement
+    : selectedElement && primary
       ? {
-          rect: params.primarySelectedMeasurement.rect,
+          rect: primary.rect,
           element: selectedElement,
         }
-      : null
       : null
 
   const hoverTarget: OptionTarget | null = params.hoverGuide

@@ -1,5 +1,9 @@
 # mesurer
 
+## 0.0.7
+
+- restore toolbar/menu shadow rendering with stable surface CSS classes
+
 ## 0.0.6
 
 - add Chrome extension (MV3) with click-to-toggle toolbar
